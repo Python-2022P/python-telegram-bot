@@ -15,13 +15,16 @@ while True:
     current_update = updates[-1]
     # get current update id
     current_update_id = current_update.update_id
-    # get update chat_id and text
-    chat_id = current_update.message.chat.id
-    text = current_update.message.text
+    # get last message
+    last_msg = current_update.message
 
     if last_update_id != current_update_id:
-        print(current_update_id, chat_id, text)
-        bot.send_message(chat_id, text)
+        # get text
+        text = last_msg.text
+
+        print(current_update_id, text)
+        # send message
+        last_msg.reply_text(text)
 
         last_update_id = current_update_id
 
