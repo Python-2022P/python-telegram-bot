@@ -1,31 +1,21 @@
-import telegram 
 import os
-import time
+from telegram.ext import Updater, MessageHandler, Filters
 
+from callbacks import (
+    echo_photo,
+    echo_text
+)
 
 TOKEN = os.environ.get('TOKEN')
-bot = telegram.Bot(TOKEN)
 
-# default update id
-last_update_id = -1
-while True:
-    # get all updates
-    updates = bot.get_updates()
-    # current update
-    current_update = updates[-1]
-    # get current update id
-    current_update_id = current_update.update_id
-    # get last message
-    last_msg = current_update.message
 
-    if last_update_id != current_update_id:
-        # get text
-        text = last_msg.text
+# updater
+updater = Updater(TOKEN)
+# dispatcher
+dispatcher = updater.dispatcher
 
-        print(current_update_id, text)
-        # send message
-        last_msg.reply_text(text)
+dispatcher.add_handler(handler=MessageHandler(filters=Filters.text, callback=echo_text))
+dispatcher.add_handler(handler=MessageHandler(filters=Filters.photo, callback=echo_photo))
 
-        last_update_id = current_update_id
-
-    time.sleep(1)
+updater.start_polling()
+updater.idle()
